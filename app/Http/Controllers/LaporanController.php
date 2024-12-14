@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reimbursment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LaporanController extends Controller
@@ -34,13 +35,16 @@ class LaporanController extends Controller
             $data->where('status_pengajuan', $status);
         }
         $items = $data->latest()->get();
-        // dd($items);
+        if (count($items) < 1) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
         $pdf = Pdf::loadView('pages.laporan.export-pdf', [
             'items' => $items,
             'tanggal_awal' => $tanggal_awal,
             'tanggal_akhir' => $tanggal_akhir,
             'status' => $status
         ]);
-        return $pdf->stream('laporan-reimbursment.pdf');
+        $fileName = 'laporan-reimbursment-' . Carbon::now()->format('Y-m-d H:i') . '.pdf';
+        return $pdf->download($fileName);
     }
 }

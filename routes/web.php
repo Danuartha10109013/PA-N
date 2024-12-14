@@ -30,21 +30,22 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('test', function () {
-    try {
-        Mail::to('c9Xb4@example.com')->send(new \App\Mail\SendMail(['name' => 'test']));
-        dd('Berhasil kekirim');
-    } catch (\Throwable $th) {
-        //throw $th;
-        dd($th->getMessage());
+// Route::get('test', function () {
+//     try {
+//         Mail::to('c9Xb4@example.com')->send(new \App\Mail\SendMail(['name' => 'test']));
+//         dd('Berhasil kekirim');
+//     } catch (\Throwable $th) {
+//         //throw $th;
+//         dd($th->getMessage());
 
-        Log::error($th->getMessage());
-    }
-});
+//         Log::error($th->getMessage());
+//     }
+// });
 
 // admin
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/get-data', [DashboardController::class, 'getData'])->name('get-data-ajax');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('reimbursment/pembayaran/{id}', [ReimbursmentController::class, 'pembayaran'])->name('reimbursment.pembayaran');

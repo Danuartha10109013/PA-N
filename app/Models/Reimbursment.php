@@ -69,4 +69,11 @@ class Reimbursment extends Model
     {
         return $this->belongsTo(Kategori::class);
     }
+
+    public function scopeGetBy($q)
+    {
+        if (auth()->user()->role !== 'staff keuangan') {
+            $q->where('user_id', auth()->id());
+        }
+    }
 }

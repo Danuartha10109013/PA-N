@@ -9,8 +9,12 @@
                 <div class="row w-100 mx-0">
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                            <h4 class="mb-4">Sistem Reimbursment</h4>
-                            <h6 class="font-weight-light">Sign in to continue.</h6>
+                            <div class="text-center">
+                                <img src="{{ asset('assets/images/tekmt.png') }}" class="img-fluid mb-2"
+                                    style="max-height:90px" alt="">
+                                <h4 class="mb-4">Sistem Reimbursment</h4>
+                                <h6 class="font-weight-light">Sign in to continue.</h6>
+                            </div>
                             <form class="pt-3" method="post" action="{{ route('login') }}">
                                 @csrf
                                 <div class="form-group">

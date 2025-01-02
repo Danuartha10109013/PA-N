@@ -1,11 +1,12 @@
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
-        <a class="navbar-brand brand-logo" href="{{ route('dashboard') }}">
-            <h4> Sistem Reimbursment</h4>
+        <div class="w-100"></div>
+        {{-- <a class="navbar-brand text-center brand-logo" href="{{ route('dashboard') }}">
+            <h6 class=""> System TEKMT Reimbursment</h6>
         </a>
         <a class="navbar-brand brand-logo-mini" href="{{ route('dashboard') }}">
-            <h4> Sistem Reimbursment</h4>
-        </a>
+            <h4>TEKMT</h4>
+        </a> --}}
         <button class="navbar-toggler navbar-toggler align-self-center d-none d-lg-flex" type="button"
             data-toggle="minimize">
             <span class="typcn typcn-th-menu"></span>

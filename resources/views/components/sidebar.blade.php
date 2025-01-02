@@ -1,9 +1,18 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <ul class="nav">
         <li class="nav-item">
+            <div class="d-flex justify-content-center">
+                <div class="text-center">
+                    <img src="{{ asset('assets/images/tekmt.png') }}" class="img-fluid mb-2" style="max-height:80px"
+                        alt="">
+                    <h5 class="text-white"> System TEKMT Reimbursment</h5>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
             <div class="d-flex sidebar-profile">
                 <div class="sidebar-profile-image">
-                    <img src="{{ asset('assets') }}/images/faces/face29.png" alt="image">
+                    <img src="{{ auth()->user()->avatar() }}" alt="image">
                     <span class="sidebar-status-indicator"></span>
                 </div>
                 <div class="sidebar-profile-name">
@@ -79,6 +88,5 @@
                 </a>
             </li>
         @endif
-
     </ul>
 </nav>

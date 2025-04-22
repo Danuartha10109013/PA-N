@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Models\NotifM;
 use App\Events\NewNotification;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/test-notif', function () {
     $notif = NotifM::create([
@@ -42,6 +43,9 @@ Route::get('/test-notif', function () {
 
     return back()->with('success', 'Notifikasi test berhasil dikirim!');
 });
+
+// Route to update notification status
+Route::post('/update/status-notif', [NotificationController::class, 'markAsRead'])->name('notif.markAsRead');
 
 Auth::routes();
 

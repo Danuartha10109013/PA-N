@@ -27,6 +27,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+use App\Models\NotifM;
+use App\Events\NewNotification;
+
+Route::get('/test-notif', function () {
+    $notif = NotifM::create([
+        'title' => 'Notifikasi Test',
+        'value' => 'Ini adalah notifikasi percobaan untuk staff keuangan.',
+        'status' => 0,
+        'pengirim' => auth()->id(), // atau ID tertentu
+    ]);
+
+    event(new NewNotification($notif)); // Kirim via broadcast
+
+    return back()->with('success', 'Notifikasi test berhasil dikirim!');
+});
 
 Auth::routes();
 

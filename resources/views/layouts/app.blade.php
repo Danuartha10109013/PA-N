@@ -18,7 +18,6 @@
     <link rel="shortcut icon" href="{{ asset('assets') }}/images/favicon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="{{ asset('assets/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
-    @vite(['resources/js'])
     @stack('styles')
 </head>
 
@@ -70,6 +69,41 @@
 
     <!-- End custom js for this page-->
     @stack('scripts')
+    @if(Auth::user()->role === 'staff keuangan') 
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+    
+            // Pusher setup
+            Pusher.logToConsole = false;
+    
+            const pusher = new Pusher('{{ env("PUSHER_APP_KEY") }}', {
+                cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+                encrypted: true
+            });
+    
+            const channel = pusher.subscribe('notifications');
+    
+            channel.bind('new-notification', function(data) {
+                if (Notification.permission === "granted") {
+                    new Notification(data.notification.title, {
+                        body: data.notification.value,
+                        icon: "/icon.png"
+                    });
+    
+                    // Tandai sebagai dibaca (opsional)
+                    fetch(`/update-notif-status/${data.notification.id}`);
+                }
+            });
+        });
+    </script>
+    
+    @endif    
+
+        
 </body>
 
 </html>

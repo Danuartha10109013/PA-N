@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/css/vertical-layout-light/style.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets') }}/images/favicon.png" />
-    @vite(['resources/js'])
 </head>
 
 <body>

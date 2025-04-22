@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewNotification;
 use App\Mail\SendMail;
 use App\Models\Anggaran;
 use App\Models\Kategori;
+use App\Models\NotifM;
 use App\Models\Reimbursment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -68,8 +71,17 @@ class ReimbursmentController extends Controller
                 'data' => $data
             ];
             Mail::to(auth()->user()->email)->send(new \App\Mail\SendMail($body));
+            $notif = new NotifM();
+            $notif->title = "Pengajuan Reimbursment";
+            $notif->value = "Pengajuan Remibursment telah terkonfirmasi, silahkan periksa";
+            $notif->pengirim = Auth::user()->id;
+            $notif->status = 0;
+            $notif->save();
+            broadcast(new NewNotification($notif));
             DB::commit();
-            return redirect()->route('reimbursment.index')->with('success', 'Reimbursment berhasil diajukan. Tunggu Verifikasi dari Keuangan.');
+            return redirect()->route('reimbursment.index')
+                    ->with('success', 'Reimbursment berhasil diajukan. Tunggu Verifikasi dari Keuangan.')
+                    ->with('notif', 'Ada pengajuan reimbursement baru!');
         } catch (\Throwable $th) {
             throw $th;
             DB::rollBack();

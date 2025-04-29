@@ -27,7 +27,8 @@
 
                 $unreadCount = \App\Models\NotifM::where('status', 0)->count();
             @endphp
-        
+            @if (Auth::user()->role === 'staff keuangan')
+                
             <div class="notif-container me-3 position-relative">
                 <button id="notifToggle" class="btn btn-light position-relative d-flex align-items-center justify-content-center">
                     <i style="margin-top: 0.5rem;" class="bi bi-bell fs-4"></i>
@@ -72,6 +73,7 @@
                 </div>
             </div>
         
+            @endif
             <style>
                 .notif-container {
                     position: relative;

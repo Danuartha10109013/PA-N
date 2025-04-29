@@ -8,6 +8,7 @@ use App\Models\Anggaran;
 use App\Models\Kategori;
 use App\Models\NotifM;
 use App\Models\Reimbursment;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,7 +71,11 @@ class ReimbursmentController extends Controller
                 'to' => 'staff keuangan',
                 'data' => $data
             ];
-            Mail::to(auth()->user()->email)->send(new \App\Mail\SendMail($body));
+            $send_to = User::where('role', 'staff keuangan')->pluck('email');
+            foreach ($send_to as $email) {
+                Mail::to($email)->send(new \App\Mail\SendMail($body));
+            }
+
             $notif = new NotifM();
             $notif->title = "Pengajuan Reimbursment";
             $notif->value = "Pengajuan Remibursment telah terkonfirmasi, silahkan periksa";

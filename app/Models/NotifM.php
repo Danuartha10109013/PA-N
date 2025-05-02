@@ -13,5 +13,6 @@ class NotifM extends Model
         'value',
         'status',
         'pengirim',
+        'reimbursments_id'
     ];
 }

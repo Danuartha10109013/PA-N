@@ -80,6 +80,7 @@ class ReimbursmentController extends Controller
             $notif->title = "Pengajuan Reimbursment";
             $notif->value = "Pengajuan Remibursment telah terkonfirmasi, silahkan periksa";
             $notif->pengirim = Auth::user()->id;
+            $notif->reimbursments_id = $data->id;
             $notif->status = 0;
             $notif->save();
             broadcast(new NewNotification($notif));

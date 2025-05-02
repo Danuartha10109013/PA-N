@@ -43,6 +43,7 @@
                     <div class="fw-bold border-bottom pb-1 mb-2">Notifikasi</div>
                     <ul class="list-unstyled mb-2" style="max-height: 300px; overflow-y: auto;">
                         @forelse($notif as $n)
+                        <a style="none" href="{{ route('reimbursment.show', ['reimbursment' => $n->reimbursments_id]) }}">
                         <li class="notif-item px-2 py-2 mb-1 rounded {{ $n->status == 0 ? 'bg-light fw-bold' : 'text-muted' }}" data-id="{{ $n->id }}">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
@@ -61,7 +62,7 @@
                                 @endif
                             </div>
                         </li>
-                    
+                        </a>
                         @empty
                             <li class="text-center text-muted">Tidak ada notifikasi.</li>
                         @endforelse

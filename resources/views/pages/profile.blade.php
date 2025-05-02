@@ -5,21 +5,6 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mb-5">Edit Profile</h4>
-                    <button onclick="showNotif()">Tes Notifikasi</button>
-
-                    <script>
-                        function showNotif() {
-                            if (Notification.permission === "granted") {
-                                new Notification("notif", {  // "notif" adalah judul
-                                    body: "Ini notifikasi browser dari Laravel 🧃", // body notifikasi
-                                    icon: "/icon.png" // opsional
-                                });
-                            } else {
-                                alert("Izin notifikasi belum diberikan!");
-                            }
-                        }
-                        </script>
-                        
 
                     <form action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                         @csrf

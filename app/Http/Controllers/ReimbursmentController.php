@@ -223,25 +223,44 @@ class ReimbursmentController extends Controller
 
     public function proses_pembayaran($id)
     {
+        // dd(request()->all());
         request()->validate([
             'metode_pembayaran' => ['required'],
             'nomor_rekening' => ['required'],
             'pemilik' => ['required'],
+            'bukti_pembayaran' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
+
         $item = Reimbursment::with(['user.department'])->getByUser()->findOrFail($id);
+
+        // Ambil data input kecuali file
         $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik']);
         $data['jumlah_dibayarkan'] = $item->nominal;
-        if (request('tanggal_pembayaran')) {
+
+        if (request()->filled('tanggal_pembayaran')) {
             $data['tanggal_pembayaran'] = request('tanggal_pembayaran');
         }
-        if (request('status_pembayaran')) {
+
+        if (request()->filled('status_pembayaran')) {
             $data['status_pembayaran'] = request('status_pembayaran');
         }
-        if ($item->pembayaran)
-            $item->pembayaran()->update($data);
-        else
-            $item->pembayaran()->create($data);
 
-        return redirect()->back()->with('status', 'Pembayaran berhasil di submit.');
+        // Handle file upload
+        if (request()->hasFile('bukti_pembayaran')) {
+            $file = request()->file('bukti_pembayaran');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('bukti'), $filename);
+            $data['bukti_pembayaran'] = 'bukti/' . $filename;
+        }
+
+        // Update jika sudah ada, kalau tidak buat baru
+        if ($item->pembayaran) {
+            $item->pembayaran()->update($data);
+        } else {
+            $item->pembayaran()->create($data);
+        }
+
+        return redirect()->back()->with('status', 'Pembayaran berhasil disubmit.');
     }
+
 }

@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('notification', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('reimbursments_id')->nullable();
             $table->string('title')->nullable();
             $table->string('value')->nullable();
             $table->string('status')->nullable();
             $table->string('pengirim')->nullable();
             $table->timestamps();
+
+            $table->foreign('reimbursments_id')->references('id')->on('reimbursments')->onDelete('cascade');
+
         });
     }
 

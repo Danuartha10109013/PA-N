@@ -88,7 +88,13 @@
                             </li>
                             <li class="d-flex justify-content-between mb-2">
                                 <span>Tanggal Dibayarkan</span>
-                                <span>{{ formatTanggal($item->pembayaran->tanggal_dibayarkan) }}</span>
+                                <span>{{ formatTanggal($item->pembayaran->tanggal_pembayaran) }}</span>
+                            </li>
+                            <li class="d-flex justify-content-between mb-2">
+                                <span>Bukti Pembayaraan : </span> <br>
+                            </li>
+                            <li>
+                                <span><img src="{{asset($item->pembayaran->bukti_pembayaran)}}" width="20%" alt=""></span>
                             </li>
                         @endif
                         @if ($anggaran && $item->status_pengajuan == 0)

@@ -83,6 +83,24 @@
                                         </div>
                                     @enderror
                                 </div>
+                                
+                                @if ($item->pembayaran->bukti_pembayaran)
+                                <p>Bukti Pembayaran :</p>
+                                    <img width="20%" src="{{asset($item->pembayaran->bukti_pembayaran)}}" alt="">
+                                @else
+                                <div class='form-group mb-3'>
+                                    <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran</label>
+                                    <input type='file' name='bukti_pembayaran' id='bukti_pembayaran'
+                                        accept='image/*'
+                                        class='form-control @error('bukti_pembayaran') is-invalid @enderror'   >
+                                    @error('bukti_pembayaran')
+                                        <div class='invalid-feedback'>
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                @endif
+
                             @else
                                 <div class='form-group mb-3'>
                                     <label for='sp' class='mb-2'>Status Pembayaran</label>
@@ -109,6 +127,7 @@
                                     @enderror
                                 </div>
                             @endif
+                            
                             @if (!$item->pembayaran || $item->pembayaran->status_pembayaran !== 'Lunas')
                                 <div class="form-group text-right">
                                     <button class="btn btn-primary">Submit</button>

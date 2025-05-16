@@ -58,19 +58,8 @@
                             </div>
                             @if (role_staff_keuangan())
                                 <div class='form-group'>
-                                    <label for='status_pembayaran'>Status Pembayaran</label>
-                                    <select name='status_pembayaran' id='status_pembayaran'
-                                        class='form-control @error('status_pembayaran') is-invalid @enderror'>
-                                        <option value='' selected disabled>Pilih Status Pembayaran</option>
-                                        <option @selected($item->pembayaran ? $item->pembayaran->status_pembayaran === 'Pending' : '') value="Pending">Pending</option>
-                                        <option @selected($item->pembayaran ? $item->pembayaran->status_pembayaran === 'Lunas' : '') value="Lunas">Lunas</option>
-                                        <option @selected($item->pembayaran ? $item->pembayaran->status_pembayaran === 'Gagal' : '') value="Gagal">Gagal</option>
-                                    </select>
-                                    @error('status_pembayaran')
-                                        <div class='invalid-feedback'>
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
+                                    <input type="hidden" name="status_pembayaran" id="" value="Lunas">
+                                    
                                 </div>
                                 <div class='form-group mb-3'>
                                     <label for='tanggal_pembayaran' class='mb-2'>Tanggal Pembayaran</label>
@@ -89,10 +78,10 @@
                                     <img width="20%" src="{{asset($item->pembayaran->bukti_pembayaran)}}" alt="">
                                 @else
                                 <div class='form-group mb-3'>
-                                    <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran</label>
+                                    <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran <small style="color: red">*</small></label>
                                     <input type='file' name='bukti_pembayaran' id='bukti_pembayaran'
                                         accept='image/*'
-                                        class='form-control @error('bukti_pembayaran') is-invalid @enderror'   >
+                                        class='form-control @error('bukti_pembayaran') is-invalid @enderror'  required >
                                     @error('bukti_pembayaran')
                                         <div class='invalid-feedback'>
                                             {{ $message }}

@@ -57,10 +57,7 @@
                                 @enderror
                             </div>
                             @if (role_staff_keuangan())
-                                <div class='form-group'>
-                                    <input type="hidden" name="status_pembayaran" id="" value="Lunas">
-                                    
-                                </div>
+                                    <input type="hidden" name="status_pembayaran" value="Lunas">
                                 <div class='form-group mb-3'>
                                     <label for='tanggal_pembayaran' class='mb-2'>Tanggal Pembayaran</label>
                                     <input type='date' name='tanggal_pembayaran' id='tanggal_pembayaran'
@@ -78,10 +75,10 @@
                                     <img width="20%" src="{{asset($item->pembayaran->bukti_pembayaran)}}" alt="">
                                 @else
                                 <div class='form-group mb-3'>
-                                    <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran <small style="color: red">*</small></label>
+                                    <label for='bukti_pembayaran' class='mb-2'>Bukti Pembayaran</label>
                                     <input type='file' name='bukti_pembayaran' id='bukti_pembayaran'
                                         accept='image/*'
-                                        class='form-control @error('bukti_pembayaran') is-invalid @enderror'  required >
+                                        class='form-control @error('bukti_pembayaran') is-invalid @enderror'   >
                                     @error('bukti_pembayaran')
                                         <div class='invalid-feedback'>
                                             {{ $message }}

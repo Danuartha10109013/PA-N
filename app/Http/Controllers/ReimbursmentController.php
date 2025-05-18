@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -221,46 +222,51 @@ class ReimbursmentController extends Controller
         ]);
     }
 
-    public function proses_pembayaran($id)
-    {
-        // dd(request()->all());
-        request()->validate([
-            'metode_pembayaran' => ['required'],
-            'nomor_rekening' => ['required'],
-            'pemilik' => ['required'],
-            'bukti_pembayaran' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
-        ]);
+public function proses_pembayaran($id)
+{
+    Log::info('Memulai proses pembayaran untuk reimbursement ID: ' . $id);
 
-        $item = Reimbursment::with(['user.department'])->getByUser()->findOrFail($id);
+    request()->validate([
+        'metode_pembayaran' => ['required'],
+        'nomor_rekening' => ['required'],
+        'pemilik' => ['required'],
+    ]);
 
-        // Ambil data input kecuali file
-        $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik']);
-        $data['jumlah_dibayarkan'] = $item->nominal;
+    $item = Reimbursment::with(['user.department'])->getByUser()->findOrFail($id);
+    Log::info('Data reimbursement ditemukan', ['item' => $item]);
 
-        if (request()->filled('tanggal_pembayaran')) {
-            $data['tanggal_pembayaran'] = request('tanggal_pembayaran');
-        }
+    $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik']);
+    $data['jumlah_dibayarkan'] = $item->nominal;
 
-        if (request()->filled('status_pembayaran')) {
-            $data['status_pembayaran'] = request('status_pembayaran');
-        }
-
-        // Handle file upload
-        if (request()->hasFile('bukti_pembayaran')) {
-            $file = request()->file('bukti_pembayaran');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('bukti'), $filename);
-            $data['bukti_pembayaran'] = 'bukti/' . $filename;
-        }
-
-        // Update jika sudah ada, kalau tidak buat baru
-        if ($item->pembayaran) {
-            $item->pembayaran()->update($data);
-        } else {
-            $item->pembayaran()->create($data);
-        }
-
-        return redirect()->back()->with('status', 'Pembayaran berhasil disubmit.');
+    if (request()->filled('tanggal_pembayaran')) {
+        $data['tanggal_pembayaran'] = request('tanggal_pembayaran');
     }
+
+    if (request()->filled('status_pembayaran')) {
+        $data['status_pembayaran'] = request('status_pembayaran');
+    }
+
+    if (request()->hasFile('bukti_pembayaran')) {
+        $file = request()->file('bukti_pembayaran');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('bukti'), $filename);
+        $data['bukti_pembayaran'] = 'bukti/' . $filename;
+
+        Log::info('Bukti pembayaran berhasil diupload', ['file' => $data['bukti_pembayaran']]);
+    }
+
+    Log::info('Data pembayaran yang akan disimpan:', $data);
+
+    // Update jika sudah ada, kalau tidak buat baru
+    if ($item->pembayaran) {
+        $item->pembayaran()->update($data);
+        Log::info('Data pembayaran berhasil diperbarui untuk ID: ' . $item->id);
+    } else {
+        $item->pembayaran()->create($data);
+        Log::info('Data pembayaran baru berhasil dibuat untuk ID: ' . $item->id);
+    }
+
+    return redirect()->back()->with('status', 'Pembayaran berhasil disubmit.');
+}
 
 }

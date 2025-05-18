@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('pengirim')->nullable();
             $table->timestamps();
 
-            $table->foreign('reimbursments_id')->references('id')->on('reimbursments')->onDelete('cascade');
+            $table->foreign('reimbursments_id')->references('id')->on('reimbursment')->onDelete('cascade');
 
         });
     }

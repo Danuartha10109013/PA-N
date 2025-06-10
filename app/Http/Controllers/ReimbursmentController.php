@@ -84,7 +84,7 @@ class ReimbursmentController extends Controller
             $notif->reimbursments_id = $data->id;
             $notif->status = 0;
             $notif->save();
-            broadcast(new NewNotification($notif));
+            // broadcast(new NewNotification($notif));
             DB::commit();
             return redirect()->route('reimbursment.index')
                     ->with('success', 'Reimbursment berhasil diajukan. Tunggu Verifikasi dari Keuangan.')

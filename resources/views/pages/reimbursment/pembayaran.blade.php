@@ -20,42 +20,93 @@
                             enctype="multipart/form-data">
                             @csrf
                             @method('patch')
-                            <div class='form-group mb-3'>
-                                <label for='metode_pembayaran' class='mb-2'>Metode Pembayaran</label>
-                                <input type='text' name='metode_pembayaran' id='metode_pembayaran'
-                                    class='form-control @error('metode_pembayaran') is-invalid @enderror'
-                                    value='{{ $item->pembayaran ? $item->pembayaran->metode_pembayaran : old('metode_pembayaran') }}'
-                                    @readonly(role_staff_keuangan())>
-                                @error('metode_pembayaran')
-                                    <div class='invalid-feedback'>
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class='form-group mb-3'>
+                            <div class="form-group mb-3">
+                            <label for="metode_pembayaran" class="mb-2">Metode Pembayaran</label>
+
+                            <select name="metode_pembayaran" id="metode_pembayaran"
+                                class="form-control @error('metode_pembayaran') is-invalid @enderror"
+                                {{ role_staff_keuangan() ? 'disabled' : '' }}>
+                                <option value="">-- Pilih Metode --</option>
+                                <option value="Tunai" 
+                                    {{ (old('metode_pembayaran', $item->pembayaran->metode_pembayaran ?? '') == 'Tunai') ? 'selected' : '' }}>
+                                    Tunai
+                                </option>
+                                <option value="Transfer" 
+                                    {{ (old('metode_pembayaran', $item->pembayaran->metode_pembayaran ?? '') == 'Transfer') ? 'selected' : '' }}>
+                                    Transfer
+                                </option>
+                            </select>
+
+                            @if (role_staff_keuangan())
+                                {{-- Hidden input to preserve value --}}
+                                <input type="hidden" name="metode_pembayaran"
+                                    value="{{ old('metode_pembayaran', $item->pembayaran->metode_pembayaran ?? '') }}">
+                            @endif
+
+                            @error('metode_pembayaran')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+
+                            {{-- Nomor Rekening --}}
+                            <div class='form-group mb-3 transfer-field' id="nomorRekeningGroup" style="display: none;">
                                 <label for='nomor_rekening' class='mb-2'>Nomor Rekening</label>
                                 <input type='text' name='nomor_rekening' id='nomor_rekening'
                                     class='form-control @error('nomor_rekening') is-invalid @enderror'
-                                    value='{{ $item->pembayaran ? $item->pembayaran->nomor_rekening : old('nomor_rekening') }}'
+                                    value='{{ $item->pembayaran->nomor_rekening ?? old('nomor_rekening') }}'
                                     @readonly(role_staff_keuangan())>
                                 @error('nomor_rekening')
-                                    <div class='invalid-feedback'>
-                                        {{ $message }}
-                                    </div>
+                                    <div class='invalid-feedback'>{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class='form-group mb-3'>
+
+                            {{-- Nama Rekening --}}
+                            <div class="form-group mb-3 transfer-field" id="namaRekeningGroup" style="display: none;">
+                                <label for="nama_rekening" class="mb-2">Nama Rekening</label>
+                                <input type="text" name="nama_rekening" id="nama_rekening"
+                                    class="form-control @error('nama_rekening') is-invalid @enderror"
+                                    value="{{ $item->pembayaran->nama_rekening ?? old('nama_rekening') }}"
+                                    {{ role_staff_keuangan() ? 'readonly' : '' }}>
+                                @error('nama_rekening')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Pemilik --}}
+                            <div class='form-group mb-3 transfer-field' id="pemilikGroup" style="display: none;">
                                 <label for='pemilik' class='mb-2'>Pemilik</label>
                                 <input type='text' name='pemilik' id='pemilik'
                                     class='form-control @error('pemilik') is-invalid @enderror'
-                                    value='{{ $item->pembayaran ? $item->pembayaran->pemilik : old('pemilik') }}'
+                                    value='{{ $item->pembayaran->pemilik ?? old('pemilik') }}'
                                     @readonly(role_staff_keuangan())>
                                 @error('pemilik')
-                                    <div class='invalid-feedback'>
-                                        {{ $message }}
-                                    </div>
+                                    <div class='invalid-feedback'>{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            {{-- Script --}}
+                            <script>
+                                function toggleTransferFields() {
+                                    const metode = document.getElementById('metode_pembayaran').value;
+                                    const fields = document.querySelectorAll('.transfer-field');
+
+                                    fields.forEach(field => {
+                                        field.style.display = (metode === 'Transfer') ? 'block' : 'none';
+                                    });
+                                }
+
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    toggleTransferFields(); // Initial display
+                                    const select = document.getElementById('metode_pembayaran');
+                                    if (select && !select.hasAttribute('readonly') && !select.disabled) {
+                                        select.addEventListener('change', toggleTransferFields);
+                                    }
+                                });
+                            </script>
+
                             @if (role_staff_keuangan())
                                     <input type="hidden" name="status_pembayaran" value="Lunas">
                                 <div class='form-group mb-3'>

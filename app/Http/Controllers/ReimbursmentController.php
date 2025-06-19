@@ -84,7 +84,7 @@ class ReimbursmentController extends Controller
             $notif->reimbursments_id = $data->id;
             $notif->status = 0;
             $notif->save();
-            // broadcast(new NewNotification($notif));
+            broadcast(new NewNotification($notif));
             DB::commit();
             return redirect()->route('reimbursment.index')
                     ->with('success', 'Reimbursment berhasil diajukan. Tunggu Verifikasi dari Keuangan.')
@@ -224,18 +224,22 @@ class ReimbursmentController extends Controller
 
 public function proses_pembayaran($id)
 {
+    // dd(request()->all());
+
     Log::info('Memulai proses pembayaran untuk reimbursement ID: ' . $id);
 
     request()->validate([
         'metode_pembayaran' => ['required'],
-        'nomor_rekening' => ['required'],
-        'pemilik' => ['required'],
+        'nama_rekening'     => ['required_if:metode_pembayaran,Transfer'],
+        'nomor_rekening'    => ['required_if:metode_pembayaran,Transfer'],
+        'pemilik'           => ['required_if:metode_pembayaran,Transfer'],
     ]);
+
 
     $item = Reimbursment::with(['user.department'])->getByUser()->findOrFail($id);
     Log::info('Data reimbursement ditemukan', ['item' => $item]);
 
-    $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik']);
+    $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik','nama_rekening']);
     $data['jumlah_dibayarkan'] = $item->nominal;
 
     if (request()->filled('tanggal_pembayaran')) {

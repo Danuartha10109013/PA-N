@@ -42,7 +42,7 @@ class ReimbursmentController extends Controller
             'kategori_id' => ['required'],
             'nominal' => ['required', 'numeric'],
             'bukti' => ['required', 'image', 'mimes:png,jpg,jpeg'],
-            'surat_jalan' => ['required', 'mimes:pdf'],
+            'surat_jalan' => ['nullable', 'mimes:pdf'],
             'tanggal' => ['required']
         ]);
 
@@ -63,7 +63,10 @@ class ReimbursmentController extends Controller
         try {
             $data = request()->only(['kategori_id', 'nominal', 'deskripsi', 'tanggal']);
             $data['bukti'] = request()->file('bukti')->store('reimbursment/bukti', 'public');
-            $data['surat_jalan'] = request()->file('surat_jalan')->store('reimbursment/surat-jalan', 'public');
+            if(request()->only('surat_jalan')){
+
+                $data['surat_jalan'] = request()->file('surat_jalan')->store('reimbursment/surat-jalan', 'public');
+            }
             $data['kode'] = Reimbursment::getNewCode();
             $data['user_id'] = auth()->id();
             $data = Reimbursment::create($data);
@@ -84,7 +87,7 @@ class ReimbursmentController extends Controller
             $notif->reimbursments_id = $data->id;
             $notif->status = 0;
             $notif->save();
-            // broadcast(new NewNotification($notif));
+            broadcast(new NewNotification($notif));
             DB::commit();
             return redirect()->route('reimbursment.index')
                     ->with('success', 'Reimbursment berhasil diajukan. Tunggu Verifikasi dari Keuangan.')

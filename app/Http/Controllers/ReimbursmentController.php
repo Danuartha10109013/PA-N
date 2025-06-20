@@ -227,18 +227,22 @@ class ReimbursmentController extends Controller
 
 public function proses_pembayaran($id)
 {
+    // dd(request()->all());
+
     Log::info('Memulai proses pembayaran untuk reimbursement ID: ' . $id);
 
     request()->validate([
         'metode_pembayaran' => ['required'],
-        'nomor_rekening' => ['required'],
-        'pemilik' => ['required'],
+        'nama_rekening'     => ['required_if:metode_pembayaran,Transfer'],
+        'nomor_rekening'    => ['required_if:metode_pembayaran,Transfer'],
+        'pemilik'           => ['required_if:metode_pembayaran,Transfer'],
     ]);
+
 
     $item = Reimbursment::with(['user.department'])->getByUser()->findOrFail($id);
     Log::info('Data reimbursement ditemukan', ['item' => $item]);
 
-    $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik']);
+    $data = request()->only(['metode_pembayaran', 'nomor_rekening', 'pemilik','nama_rekening']);
     $data['jumlah_dibayarkan'] = $item->nominal;
 
     if (request()->filled('tanggal_pembayaran')) {
